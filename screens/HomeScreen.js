@@ -49,7 +49,7 @@ END:VCARD`} />;
         <ContactQrCode />
       </View>
 
-      <Text>Praise the Lord TYG!!!
+      <Text style={{color: "white"}}>PTL TYG!!!
       
       </Text>
 
