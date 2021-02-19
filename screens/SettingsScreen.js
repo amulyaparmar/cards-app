@@ -8,7 +8,7 @@ import SvgQRCode from 'react-native-qrcode-svg';
 import { AuthUserContext } from '../navigation/AuthUserProvider';
 
 
-export default function HomeScreen() {
+export default function SettingsScreen() {
   const { user, setUser } = useContext(AuthUserContext);
 
 
@@ -20,11 +20,6 @@ export default function HomeScreen() {
       console.log(error);
     }
   }
-
-  const [name, setName] = useState("Amulya Parmar");
-  const [email, setEmail] = useState("parmar.amulya@gmail.com");
-  const [phone, setPhone] = useState("5862588588");
-  const [website, setWebsite] = useState("https://amulya.co");
 
   const [userData, setUserData] = useState({
     "name": { "symbol": "FN", "value": "Amulya Parmar", "enabled": true },
@@ -54,10 +49,9 @@ END:VCARD
 
     if (liveShare) {
 
-      return setVcf("http://cardz.me/amulya")
+      return setVcf("https://cardz.me/amulya")
 
     }
-
 
     const prefix = `
 BEGIN:VCARD
@@ -66,7 +60,7 @@ PRODID:-//cardz
 `;
 
     const middle = Object.entries(userData).map(([k, v]) => {
-      // console.log(k, v);
+      console.log(k, v);
 
       if (v && v.enabled && v.symbol) {
         return `${v.symbol}:${v.value}` + "\n"
@@ -77,35 +71,16 @@ PRODID:-//cardz
     }).join('');
 
 
-    let active = Object.entries(userData).filter(([k, v]) => {
-      return v.enabled;
-    })
-
-    console.log("currently active: ", active, "|| length: ", active.length);
-    if (active.length === 1) {
-
-      if (active[0][0] === "email") {
-        return setVcf('mailto:' + active[0][1].value);
-      }
-
-
-
-      console.log("one item: ", active[0][1].value);
-      // setVcf(active[0].value);
-      return;
-    }
-
     const suffix = `END:VCARD
 `
-    // console.log(prefix + middle + suffix);
+    console.log(prefix + middle + suffix);
     return setVcf(prefix + middle + suffix);
   }
 
 
-
   useEffect(() => {
     buildQrCode();
-  }, [userData, liveShare])
+  }, [userData])
 
   function ContactQrCode() {
     return <View style={styles.QrCodeContainer}><SvgQRCode size={250} value={vcf} /></View>;
@@ -130,21 +105,20 @@ PRODID:-//cardz
         setLiveShare(!old);
       })}>
 
-        <Text style={liveShare ? styles.ContactTextActive : styles.ContactText}>{liveShare ? "Live Sharing (https://cardz.me/)" : "Offline Sharing (.VCF)"}</Text>
+        <Text style={liveShare ? styles.ContactTextActive : styles.ContactText}>{liveShare ? "Live Sharing (https://superconnector.link/)" : "Offline Sharing (.VCF)"}</Text>
       </TouchableHighlight>
 
+
       {liveShare && < View >
-        {userData.questions.value.map((question, idx) => {
+        {Object.entries(userData).map(([k, v]) => {
           return (
-            <TextInput key={idx} style={styles.inputFieldContainer} defaultValue={question}
+            <TextInput key={idx} style={styles.inputFieldContainer} defaultValue={k}
             // onChangeText={text => setName(text)} 
             />
           )
         })}
-        <TextInput style={styles.inputFieldContainer} placeholder={"new question"}
-        // onChangeText={text => setName(text)} 
-        />
-        <Button title={"+ Add New Question"} />
+
+        <Button title={"Save Button"} />
       </View>
       }
 
@@ -175,38 +149,13 @@ PRODID:-//cardz
 
 
 
-
         </ScrollView>
       </View>
 
-      <TextInput style={styles.inputFieldContainer} defaultValue={userData.name.value} onChangeText={text => {
-
-        let tempUserData = userData;
-        tempUserData.name.value = text;
-        return setUserData({ ...tempUserData })
-
-      }} />
-      <TextInput style={styles.inputFieldContainer} defaultValue={email} onChangeText={text => {
-
-        let tempUserData = userData;
-        tempUserData.email.value = text;
-        return setUserData({ ...tempUserData })
-
-      }} />
-      <TextInput style={styles.inputFieldContainer} defaultValue={phone} onChangeText={text => {
-
-        let tempUserData = userData;
-        tempUserData.phone.value = text;
-        return setUserData({ ...tempUserData })
-
-      }} />
-      <TextInput style={styles.inputFieldContainer} defaultValue={website} onChangeText={text => {
-
-        let tempUserData = userData;
-        tempUserData.website.value = text;
-        return setUserData({ ...tempUserData })
-
-      }} />
+      <TextInput style={styles.inputFieldContainer} defaultValue={name} onChangeText={text => setName(text)} />
+      <TextInput style={styles.inputFieldContainer} defaultValue={email} onChangeText={text => setEmail(text)} />
+      <TextInput style={styles.inputFieldContainer} defaultValue={phone} onChangeText={text => setPhone(text)} />
+      <TextInput style={styles.inputFieldContainer} defaultValue={website} onChangeText={text => setWebsite(text)} />
 
 
       <TouchableOpacity
