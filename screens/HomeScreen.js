@@ -8,7 +8,8 @@ import SvgQRCode from 'react-native-qrcode-svg';
 import { AuthUserContext } from '../navigation/AuthUserProvider';
 
 
-export default function HomeScreen() {
+
+export default function HomeScreen({ navigation }) {
   const { user, setUser } = useContext(AuthUserContext);
 
 
@@ -149,68 +150,37 @@ PRODID:-//cardz
 
       <Text style={{ color: "white" }}>PLG TYG!!!</Text>
 
-      <View style={{ height: 80 }} >
-        <ScrollView horizontal={true} style={{ flexDirection: 'row' }}>
+      
 
-          {Object.entries(userData).map(([k, v]) => {
-            return (
-              <TouchableHighlight key={k}
-                activeOpacity={0.8}
-                onPress={e => {
-                  let tempData = userData;
-                  tempData[k]["enabled"] = !tempData[k]["enabled"];
-                  console.log(tempData[k]);
+          <View style={{ height: 80 }} >
+              <ScrollView horizontal={true} style={{ flexDirection: 'row' }}>
 
-                  setUserData({ ...tempData });
+                  {Object.entries(userData).map(([k, v]) => {
+                      return (
+                          <TouchableHighlight key={k}
+                              activeOpacity={0.8}
+                              onPress={e => {
+                                  let tempData = userData;
+                                  tempData[k]["enabled"] = !tempData[k]["enabled"];
+                                  console.log(tempData[k]);
 
-                }}
-                style={userData[k].enabled ? styles.ContactButtonActive : styles.ContactButton}
-              >
-                <Text style={userData[k].enabled ? styles.ContactTextActive : styles.ContactText}>{k}</Text>
-              </TouchableHighlight>
-            )
-          })
-          }
+                                  setUserData({ ...tempData });
 
-
-
-
-        </ScrollView>
-      </View>
-
-      <TextInput style={styles.inputFieldContainer} defaultValue={userData.name.value} onChangeText={text => {
-
-        let tempUserData = userData;
-        tempUserData.name.value = text;
-        return setUserData({ ...tempUserData })
-
-      }} />
-      <TextInput style={styles.inputFieldContainer} defaultValue={email} onChangeText={text => {
-
-        let tempUserData = userData;
-        tempUserData.email.value = text;
-        return setUserData({ ...tempUserData })
-
-      }} />
-      <TextInput style={styles.inputFieldContainer} defaultValue={phone} onChangeText={text => {
-
-        let tempUserData = userData;
-        tempUserData.phone.value = text;
-        return setUserData({ ...tempUserData })
-
-      }} />
-      <TextInput style={styles.inputFieldContainer} defaultValue={website} onChangeText={text => {
-
-        let tempUserData = userData;
-        tempUserData.website.value = text;
-        return setUserData({ ...tempUserData })
-
-      }} />
+                              }}
+                              style={userData[k].enabled ? styles.ContactButtonActive : styles.ContactButton}
+                          >
+                              <Text style={userData[k].enabled ? styles.ContactTextActive : styles.ContactText}>{k}</Text>
+                          </TouchableHighlight>
+                      )
+                  })
+                  }
+              </ScrollView>
+          </View>
 
 
-      <TouchableOpacity
-        activeOpacity={0.8}
-        // onPress={onPress}
+          <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => navigation.navigate('ProfileSettings', { userData: userData, setUserData: setUserData })}
         style={styles.addMoreButtonContainer}
       >
         <Text style={styles.addMoreButtonText}>+ Add more Info</Text>

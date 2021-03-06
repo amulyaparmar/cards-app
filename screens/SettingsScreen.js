@@ -8,19 +8,14 @@ import SvgQRCode from 'react-native-qrcode-svg';
 import { AuthUserContext } from '../navigation/AuthUserProvider';
 
 
-export default function SettingsScreen() {
-  const { user, setUser } = useContext(AuthUserContext);
+export default function SettingsScreen({ navigation, route }) {
 
-
-  useStatusBar('dark-content');
-  async function handleSignOut() {
-    try {
-      await logout();
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
+    const { userData, setUserData } = route.params;
+    const [name, setName] = useState("Amulya Parmar");
+    /*nst [email, setEmail] = useState("parmar.amulya@gmail.com");
+    const [phone, setPhone] = useState("5862588588");
+    const [website, setWebsite] = useState("https://amulya.co");
+   
   const [userData, setUserData] = useState({
     "name": { "symbol": "FN", "value": "Amulya Parmar", "enabled": true },
     "email": { "symbol": "EMAIL", "value": "parmar.amulya@gmail.com", "enabled": true },
@@ -31,170 +26,72 @@ export default function SettingsScreen() {
     "facebook": { "value": "https://facebook.com/amulyaco", "enabled": true },
     "questions": { "value": ["Meet at TreeHacks", 'Are you interested in joining my team?', 'Would you be interested in joining my newsletter'], "enabled": true }
   });
+   */
 
-  const [liveShare, setLiveShare] = useState(false);
-
-
-
-  const [vcf, setVcf] = useState(`
-BEGIN:VCARD
-VERSION:4.0
-PRODID:-//cardz
-EMAIL:${user.email}
-END:VCARD
-`
-  );
-
-  function buildQrCode() {
-
-    if (liveShare) {
-
-      return setVcf("https://cardz.me/amulya")
-
-    }
-
-    const prefix = `
-BEGIN:VCARD
-VERSION:4.0
-PRODID:-//cardz
-`;
-
-    const middle = Object.entries(userData).map(([k, v]) => {
-      console.log(k, v);
-
-      if (v && v.enabled && v.symbol) {
-        return `${v.symbol}:${v.value}` + "\n"
-      }
-      else {
-        return ``;
-      }
-    }).join('');
-
-
-    const suffix = `END:VCARD
-`
-    console.log(prefix + middle + suffix);
-    return setVcf(prefix + middle + suffix);
-  }
-
-
-  useEffect(() => {
-    buildQrCode();
-  }, [userData])
-
-  function ContactQrCode() {
-    return <View style={styles.QrCodeContainer}><SvgQRCode size={250} value={vcf} /></View>;
-  }
 
   return (
     <ScrollView style={styles.container}>
 
-      <View
-        style={{
-          width: '100%',
-          flexDirection: 'row',
-          justifyContent: 'space-around',
-          alignItems: 'center',
-          marginTop: "10%",
-          marginBottom: "10%"
-        }}>
-        <ContactQrCode />
-      </View>
+          
 
-      <TouchableHighlight style={liveShare ? styles.ContactButtonActive : styles.ContactButton} onPress={() => setLiveShare(old => {
-        setLiveShare(!old);
-      })}>
+          <TextInput style={styles.inputFieldContainer} defaultValue={userData.name.value} onChangeText={text => {
 
-        <Text style={liveShare ? styles.ContactTextActive : styles.ContactText}>{liveShare ? "Live Sharing (https://superconnector.link/)" : "Offline Sharing (.VCF)"}</Text>
-      </TouchableHighlight>
+              let tempUserData = userData;
+              tempUserData.name.value = text;
+              return setUserData({ ...tempUserData })
 
+          }} />
 
-      {liveShare && < View >
-        {Object.entries(userData).map(([k, v]) => {
-          return (
-            <TextInput key={idx} style={styles.inputFieldContainer} defaultValue={k}
-            // onChangeText={text => setName(text)} 
-            />
-          )
-        })}
+          <TextInput style={styles.inputFieldContainer} defaultValue={userData.name.value} onChangeText={text => {
 
-        <Button title={"Save Button"} />
-      </View>
-      }
+              let tempUserData = userData;
+              tempUserData.name.value = text;
+              return setUserData({ ...tempUserData })
 
-      <Text style={{ color: "white" }}>PLG TYG!!!</Text>
+          }} />
 
-      <View style={{ height: 80 }} >
-        <ScrollView horizontal={true} style={{ flexDirection: 'row' }}>
+          {/*<TextInput style={styles.inputFieldContainer} defaultValue={email} onChangeText={text => {
 
-          {Object.entries(userData).map(([k, v]) => {
-            return (
-              <TouchableHighlight key={k}
-                activeOpacity={0.8}
-                onPress={e => {
-                  let tempData = userData;
-                  tempData[k]["enabled"] = !tempData[k]["enabled"];
-                  console.log(tempData[k]);
+              let tempUserData = userData;
+              tempUserData.email.value = text;
+              return setUserData({ ...tempUserData })
 
-                  setUserData({ ...tempData });
+          }} />
+          <TextInput style={styles.inputFieldContainer} defaultValue={phone} onChangeText={text => {
 
-                }}
-                style={userData[k].enabled ? styles.ContactButtonActive : styles.ContactButton}
-              >
-                <Text style={userData[k].enabled ? styles.ContactTextActive : styles.ContactText}>{k}</Text>
-              </TouchableHighlight>
-            )
-          })
-          }
+              let tempUserData = userData;
+              tempUserData.phone.value = text;
+              return setUserData({ ...tempUserData })
 
+          }} />
+          <TextInput style={styles.inputFieldContainer} defaultValue={website} onChangeText={text => {
 
+              let tempUserData = userData;
+              tempUserData.website.value = text;
+              return setUserData({ ...tempUserData })
 
-        </ScrollView>
-      </View>
-
-      <TextInput style={styles.inputFieldContainer} defaultValue={name} onChangeText={text => setName(text)} />
-      <TextInput style={styles.inputFieldContainer} defaultValue={email} onChangeText={text => setEmail(text)} />
-      <TextInput style={styles.inputFieldContainer} defaultValue={phone} onChangeText={text => setPhone(text)} />
-      <TextInput style={styles.inputFieldContainer} defaultValue={website} onChangeText={text => setWebsite(text)} />
-
+          }} />*/}
+          
 
       <TouchableOpacity
         activeOpacity={0.8}
-        // onPress={onPress}
+              onPress={() => navigation.navigate('Home')}
         style={styles.addMoreButtonContainer}
       >
-        <Text style={styles.addMoreButtonText}>+ Add more Info</Text>
+        <Text style={styles.addMoreButtonText}>+ Save Info</Text>
       </TouchableOpacity>
 
-
-      {/* <AppButton title="Save Settings" size="sm" backgroundColor="#000" /> */}
-      <TouchableOpacity
-        activeOpacity={0.8}
-        // onPress={onPress}
-        style={styles.appButtonContainer}
-      >
-        <Text style={styles.appButtonText}>Save Info</Text>
-      </TouchableOpacity>
-
-
-      <Button title="Sign Out" onPress={handleSignOut} />
-    </ScrollView >
+    </ScrollView>
+     
   );
 }
 
-const AppButton = ({ onPress, title }) => (
-  <TouchableOpacity
-    activeOpacity={0.8}
-    onPress={onPress}
-    style={styles.appButtonContainer}
-  >
-    <Text style={styles.appButtonText}>{title}</Text>
-  </TouchableOpacity>
-);
+
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+        flex: 1,
+        padding:15
   },
 
   btnNormal: {
@@ -267,7 +164,7 @@ const styles = StyleSheet.create({
     borderColor: '#000',
 
     elevation: 8,
-    backgroundColor: "#F0F0F0",
+      backgroundColor: "#FF7800",
     borderRadius: 10,
     paddingVertical: 14,
     paddingHorizontal: 12,
