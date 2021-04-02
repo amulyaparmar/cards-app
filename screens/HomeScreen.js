@@ -6,11 +6,65 @@ import { logout } from '../components/Firebase/firebase';
 
 import SvgQRCode from 'react-native-qrcode-svg';
 import { AuthUserContext } from '../navigation/AuthUserProvider';
+import * as Contacts from 'expo-contacts';
 
 
 export default function HomeScreen() {
   const { user, setUser } = useContext(AuthUserContext);
 
+  useEffect(() => {
+    (async () => {
+      const { status } = await Contacts.requestPermissionsAsync();
+      if (status === 'granted') {
+        const { data } = await Contacts.getContactsAsync({
+          fields: [Contacts.Fields.Emails],
+        });
+
+        if (data.length > 0) {
+          const contact = data[0];
+          console.log(contact);
+        }
+
+      }
+    })();
+  }, []);
+
+  async function addContact(fullName, company, phone) {
+    if (!fullName) {
+      return
+    }
+
+    var firstName = fullName.split(' ').slice(0, -1).join(' ');
+    var lastName = fullName.split(' ').slice(-1).join(' ');
+    const { status } = await Contacts.requestPermissionsAsync();
+    if (status === 'granted') {
+      const contact = {
+        [Contacts.Fields.FirstName]: firstName,
+        [Contacts.Fields.LastName]: lastName,
+        [Contacts.Fields.Company]: company,
+        [Contacts.Fields.PhoneNumbers]: [{
+          number: phone,
+        }]
+      };
+      const contactId = await Contacts.addContactAsync(contact);
+      console.log(contactId);
+
+    }
+
+    // console.log(Contacts.Fields.PhoneNumbers);
+    // console.log(typeof (Contacts.Fields.PhoneNumbers));
+
+    // var phones = Contacts.Fields.PhoneNumbers;
+    // phones.append({
+    //   number: "1231231234",
+    //   label: "+1",
+    //   id: "12"
+    // })
+
+    // console.log(phones);
+    // console.log(typeof (phones));
+
+  }
 
   useStatusBar('dark-content');
   async function handleSignOut() {
@@ -210,10 +264,10 @@ PRODID:-//cardz
 
       <TouchableOpacity
         activeOpacity={0.8}
-        // onPress={onPress}
+        onPress={() => (userData?.name?.value && userData?.website?.value) && addContact(userData.name.value, userData.website.value, userData.phone.value)}
         style={styles.addMoreButtonContainer}
       >
-        <Text style={styles.addMoreButtonText}>+ Add more Info</Text>
+        <Text style={styles.addMoreButtonText}>+ Add Contact!</Text>
       </TouchableOpacity>
 
 
